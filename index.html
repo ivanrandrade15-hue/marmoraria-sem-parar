@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marmoraria Sem Parar</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+
+    body{
+      background:#0b0b0c;
+      color:#e5e7eb;
+      overflow-x:hidden;
+      position:relative
+    }
+
+    /* FUNDO ANIMADO + TEXTURA DE MÁRMORE */
+    .bg-anim{
+      position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(200,200,200,0.04), transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(120,120,120,0.03), transparent 50%),
+        repeating-linear-gradient(120deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 2px, transparent 2px, transparent 8px),
+        repeating-linear-gradient(60deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 6px);
+      animation: moveBg 18s infinite alternate ease-in-out;
+      filter: blur(50px) contrast(110%);
+      opacity:0.9;
+    }
+
+    @keyframes moveBg{
+      0%{transform: translate(0,0) scale(1)}
+      50%{transform: translate(-30px,20px) scale(1.08)}
+      100%{transform: translate(30px,-20px) scale(1)}
+    }
+
+    header{
+      background:linear-gradient(90deg,#0b0b0c,#1a1a1b);
+      padding:16px 20px;
+      display:flex;justify-content:space-between;align-items:center;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      position:sticky;top:0;z-index:1000;
+      backdrop-filter: blur(10px)
+    }
+
+    header h1{font-size:18px}
+
+    nav{display:flex;gap:16px}
+    nav a{color:#aaa;text-decoration:none;transition:.3s;font-size:14px}
+    nav a:hover{color:#fff}
+
+    /* menu mobile */
+    .menu-btn{display:none;cursor:pointer}
+
+    .hero{padding:80px 16px;text-align:center;background:linear-gradient(180deg,#0b0b0c,#050505);animation:fadeIn 1.2s ease}
+    .hero h2{font-size:32px;margin-bottom:16px}
+    .hero p{color:#aaa;margin-bottom:24px;font-size:14px}
+
+    .btn{
+      background:linear-gradient(145deg,#2a2a2c,#3a3a3d);
+      padding:12px 20px;border-radius:10px;color:#fff;text-decoration:none;
+      transition:.3s;display:inline-block;border:1px solid rgba(255,255,255,0.1);
+      box-shadow:0 5px 20px rgba(0,0,0,0.4);font-size:14px
+    }
+
+    .btn:hover{transform:scale(1.06);background:linear-gradient(145deg,#3a3a3d,#4a4a4d)}
+
+    .section{padding:50px 16px;max-width:1100px;margin:auto}
+    .section h3{text-align:center;margin-bottom:30px;color:#fff;font-size:20px}
+
+    .cards{display:grid;grid-template-columns:1fr;gap:16px;perspective:1000px}
+
+    .card{
+      background:linear-gradient(145deg,#111,#1c1c1e);
+      padding:16px;border-radius:16px;border:1px solid rgba(255,255,255,0.06);
+      box-shadow:0 10px 30px rgba(0,0,0,0.4);
+      transition:.4s;opacity:0;transform:translateY(40px);
+      transform-style:preserve-3d;will-change:transform
+    }
+
+    .card.show{opacity:1;transform:translateY(0)}
+
+    .card:hover{
+      transform:translateY(-10px) scale(1.03);
+      border-color:rgba(255,255,255,0.2);
+      box-shadow:0 20px 50px rgba(0,0,0,0.6)
+    }
+
+    .review{background:#111;padding:16px;border-radius:10px;border-left:4px solid #fff}
+
+    input,select{width:100%;padding:10px;margin-top:5px;border-radius:6px;border:none;background:#111;color:#fff}
+
+    footer{text-align:center;padding:20px;border-top:1px solid rgba(255,255,255,0.08);margin-top:40px;color:#777;font-size:12px}
+
+    @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ===== RESPONSIVO NOTEBOOK ===== */
+    @media(min-width:768px){
+      header{padding:20px 40px}
+      header h1{font-size:20px}
+      nav a{font-size:15px}
+
+      .hero{padding:100px 20px}
+      .hero h2{font-size:40px}
+      .hero p{font-size:16px}
+
+      .section{padding:70px 20px}
+      .section h3{font-size:26px}
+
+      .cards{grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+
+      .card{padding:20px}
+      .btn{font-size:15px}
+    }
+
+    /* ===== RESPONSIVO MOBILE NAV ===== */
+    @media(max-width:600px){
+      nav{
+        position:absolute;top:70px;right:0;background:#111;
+        flex-direction:column;width:200px;padding:20px;display:none
+      }
+
+      nav.active{display:flex}
+
+      .menu-btn{display:block}
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="bg-anim"></div>
+
+<header>
+  <h1>Marmoraria Sem Parar</h1>
+  <div class="menu-btn" onclick="toggleMenu()">☰</div>
+  <nav id="menu">
+    <a href="#servicos">Serviços</a>
+    <a href="#orcamento">Orçamento</a>
+    <a href="#avaliacoes">Avaliações</a>
+    <a href="#contato">Contato</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h2>Qualidade e Luxo em Mármore</h2>
+  <p>Entrega no prazo e acabamento impecável ⭐ 4.9</p>
+  <a class="btn" href="https://wa.me/5511994420952" target="_blank">Solicitar Orçamento</a>
+</section>
+
+<section class="section" id="servicos">
+  <h3>Nossos Serviços</h3>
+  <div class="cards">
+    <div class="card"><h4>Pias e Bancadas</h4><p>Acabamento premium.</p></div>
+    <div class="card"><h4>Revestimentos</h4><p>Ambientes sofisticados.</p></div>
+    <div class="card"><h4>Projetos Sob Medida</h4><p>Precisão total.</p></div>
+  </div>
+</section>
+
+<section class="section" id="orcamento">
+  <h3>Orçamento Automático</h3>
+  <div class="card">
+    <form>
+      <label>Serviço</label>
+      <select id="servico">
+        <option value="Pia">Pia</option>
+        <option value="Bancada">Bancada</option>
+        <option value="Revestimento">Revestimento</option>
+      </select>
+
+      <label>Material</label>
+      <select id="material">
+        <option value="350">Granito (R$350/m²)</option>
+        <option value="500">Mármore (R$500/m²)</option>
+        <option value="800">Quartzo (R$800/m²)</option>
+      </select>
+
+      <label>Largura</label>
+      <input type="number" id="largura" step="0.1">
+
+      <label>Comprimento</label>
+      <input type="number" id="comprimento" step="0.1">
+
+      <h4>Total: R$ <span id="total">0.00</span></h4>
+
+      <button type="button" class="btn" onclick="enviarWhats()">Enviar Orçamento</button>
+    </form>
+  </div>
+</section>
+
+<section class="section" id="avaliacoes">
+  <h3>Avaliações</h3>
+  <div class="cards">
+    <div class="review card"><p>Serviço excelente e no prazo.</p><strong>- Cliente</strong></div>
+    <div class="review card"><p>Acabamento impecável.</p><strong>- Cliente</strong></div>
+  </div>
+</section>
+
+<section class="section" id="contato">
+  <h3>Contato</h3>
+  <div class="card">
+    <p>Av. Águia de Haia, 3780</p>
+    <p>(11) 99442-0952</p>
+  </div>
+</section>
+
+<footer>© 2026 Marmoraria Sem Parar</footer>
+
+<script>
+  const largura=document.getElementById('largura');
+  const comprimento=document.getElementById('comprimento');
+  const material=document.getElementById('material');
+  const totalSpan=document.getElementById('total');
+
+  function calcular(){
+    let l=parseFloat(largura.value)||0;
+    let c=parseFloat(comprimento.value)||0;
+    let preco=parseFloat(material.value);
+    let total=l*c*preco;
+    totalSpan.innerText=total.toFixed(2);
+  }
+
+  largura.addEventListener('input',calcular);
+  comprimento.addEventListener('input',calcular);
+  material.addEventListener('change',calcular);
+
+  function enviarWhats(){
+    let msg=`Olá, fiz um orçamento:%0A\nServiço: ${servico.value}%0A\nMaterial: ${material.options[material.selectedIndex].text}%0A\nMedidas: ${largura.value} x ${comprimento.value}%0A\nTotal: R$ ${totalSpan.innerText}`;
+    window.open(`https://wa.me/5511994420952?text=${msg}`,'_blank');
+  }
+
+  const cards=document.querySelectorAll('.card');
+
+  window.addEventListener('scroll',()=>{
+    cards.forEach(card=>{
+      let top=card.getBoundingClientRect().top;
+      if(top<window.innerHeight-50){card.classList.add('show');}
+    });
+  });
+
+  cards.forEach(card=>{
+    card.addEventListener('mousemove',(e)=>{
+      const rect=card.getBoundingClientRect();
+      const x=e.clientX-rect.left;
+      const y=e.clientY-rect.top;
+
+      const centerX=rect.width/2;
+      const centerY=rect.height/2;
+
+      const rotateX=((y-centerY)/centerY)*-10;
+      const rotateY=((x-centerX)/centerX)*10;
+
+      card.style.transform=`rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
+    });
+
+    card.addEventListener('mouseleave',()=>{
+      card.style.transform='rotateX(0) rotateY(0) scale(1)';
+    });
+  });
+  function toggleMenu(){
+    document.getElementById('menu').classList.toggle('active');
+  }
+
+  // desativa tilt no mobile
+  if(window.innerWidth < 768){
+    cards.forEach(card=>{
+      card.onmousemove=null;
+    });
+  }
+</script>
+
+</body>
+</html>
